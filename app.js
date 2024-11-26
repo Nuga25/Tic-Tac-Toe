@@ -30,7 +30,7 @@ function gameBoard() {
 
 //function that represents each square on the board
 function Cell() {
-  let value = 0;
+  let value = null;
 
   const addToken = (player) => {
     value = player;
@@ -47,6 +47,7 @@ function GameController(
   playerTwoName = "Player Two"
 ) {
   const board = gameBoard();
+  const theBoard = board.getBoard();
 
   const players = [
     { name: playerOneName, token: "X" },
@@ -65,6 +66,60 @@ function GameController(
     console.log(`${getActivePlayer().name}'s turn.`);
   };
 
+  //function to handle winning logic
+  const checkWinner = () => {
+    const boardValues = theBoard.map((row) =>
+      row.map((cell) => cell.getValue())
+    );
+
+    //check rows
+    for (let i = 0; i < 3; i++) {
+      if (
+        boardValues[i][0] &&
+        boardValues[i][0] === boardValues[i][1] &&
+        boardValues[i][1] === boardValues[i][2]
+      ) {
+        console.log(
+          `${getActivePlayer().name} wins with token "${boardValues[i][0]}"!`
+        );
+      }
+    }
+
+    //check columns
+    for (let i = 0; i < 3; i++) {
+      if (
+        boardValues[0][i] &&
+        boardValues[0][i] === boardValues[1][i] &&
+        boardValues[1][i] === boardValues[2][1]
+      ) {
+        console.log(
+          `${getActivePlayer().name} wins with token "${boardValues[0][i]}"!`
+        );
+      }
+    }
+
+    // Check diagonals
+    if (
+      boardValues[0][0] &&
+      boardValues[0][0] === boardValues[1][1] &&
+      boardValues[1][1] === boardValues[2][2]
+    ) {
+      console.log(
+        `${getActivePlayer().name} wins with token "${boardValues[0][0]}"!`
+      );
+    }
+
+    if (
+      boardValues[0][2] &&
+      boardValues[0][2] === boardValues[1][1] &&
+      boardValues[1][1] === boardValues[2][0]
+    ) {
+      console.log(
+        `${getActivePlayer().name} wins with token "${boardValues[0][2]}"!`
+      );
+    }
+  };
+
   const playRound = (r, c) => {
     console.log(
       `Dropping ${
@@ -74,6 +129,7 @@ function GameController(
     board.dropToken(r, c, getActivePlayer().token);
 
     //winner logic would be handled here
+    checkWinner();
 
     switchPlayerTurn();
     printNewRound();
@@ -88,3 +144,8 @@ const game = GameController();
 
 game.playRound(1, 1);
 game.playRound(0, 0);
+game.playRound(2, 0);
+game.playRound(0, 1);
+game.playRound(2, 2);
+game.playRound(1, 2);
+game.playRound(2, 1);

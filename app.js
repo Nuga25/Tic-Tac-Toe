@@ -137,15 +137,58 @@ function GameController(
   // Initial play game message
   printNewRound();
 
-  return { playRound, getActivePlayer };
+  return { playRound, getActivePlayer, getBoard: board.getBoard };
 }
 
-const game = GameController();
+// const game = GameController();
 
-game.playRound(1, 1);
-game.playRound(0, 0);
-game.playRound(2, 0);
-game.playRound(0, 1);
-game.playRound(2, 2);
-game.playRound(1, 2);
-game.playRound(2, 1);
+// game.playRound(1, 1);
+// game.playRound(0, 0);
+// game.playRound(2, 0);
+// game.playRound(0, 1);
+// game.playRound(2, 2);
+// game.playRound(1, 2);
+// game.playRound(2, 1);
+
+function ScreenController() {
+  const game = GameController();
+  const playerTurnText = document.querySelector(".turn");
+  const boardDiv = document.querySelector(".board");
+
+  const updateScreen = () => {
+    boardDiv.textContent = "";
+
+    //get the newest version of the board and player turn
+    const board = game.getBoard();
+    const activePlayer = game.getActivePlayer();
+
+    playerTurnText.textContent = `${activePlayer.name}'s turn...`;
+
+    //render board squares
+    board.forEach((row) => {
+      row.forEach((cell, index) => {
+        const cellButton = document.createElement("button");
+        cellButton.classList.add("cell");
+        //create a data attribute to identify the column to make it easier to pass in our 'playRound' fucntion
+        cellButton.dataset.column = index;
+        cellButton.textContent = cell.getValue();
+        boardDiv.appendChild(cellButton);
+      });
+    });
+  };
+
+  //Add event listener fr the board
+  function clickHandlerBoard(e) {
+    const selectedColumn = e.target.dataset.column;
+    //make sure i've clicked a column and not a gap in between
+    if (!selectedColumn) return;
+
+    game.playRound(selectedRow, selectedColumn);
+    updateScreen();
+  }
+  boardDiv.addEventListener("click", clickHandlerBoard);
+
+  //initial render
+  updateScreen();
+}
+ScreenController();

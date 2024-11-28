@@ -140,17 +140,7 @@ function GameController(
   return { playRound, getActivePlayer, getBoard: board.getBoard };
 }
 
-// const game = GameController();
-
-// game.playRound(1, 1);
-// game.playRound(0, 0);
-// game.playRound(2, 0);
-// game.playRound(0, 1);
-// game.playRound(2, 2);
-// game.playRound(1, 2);
-// game.playRound(2, 1);
-
-function ScreenController() {
+(function ScreenController() {
   const game = GameController();
   const playerTurnText = document.querySelector(".turn");
   const boardDiv = document.querySelector(".board");
@@ -165,30 +155,42 @@ function ScreenController() {
     playerTurnText.textContent = `${activePlayer.name}'s turn...`;
 
     //render board squares
-    board.forEach((row) => {
-      row.forEach((cell, index) => {
+    board.forEach((row, rowIndex) => {
+      row.forEach((cell, columnIndex) => {
         const cellButton = document.createElement("button");
         cellButton.classList.add("cell");
-        //create a data attribute to identify the column to make it easier to pass in our 'playRound' fucntion
-        cellButton.dataset.column = index;
+        //create a data attribute to identify the column and row to make it easier to pass in our 'playRound' fucntion
+        cellButton.dataset.row = rowIndex;
+        cellButton.dataset.column = columnIndex;
+
         cellButton.textContent = cell.getValue();
+
+        // Disable already played cells
+        if (cell.getValue() !== null) {
+          cellButton.disabled = true;
+        }
+
         boardDiv.appendChild(cellButton);
       });
     });
   };
 
-  //Add event listener fr the board
+  //Add event listener for the board
   function clickHandlerBoard(e) {
+    const selectedRow = e.target.dataset.row;
     const selectedColumn = e.target.dataset.column;
-    //make sure i've clicked a column and not a gap in between
-    if (!selectedColumn) return;
 
-    game.playRound(selectedRow, selectedColumn);
+    // Ensure the click is on a valid cell and not gaps
+    if (!selectedRow || !selectedColumn) return;
+
+    // Disable the clicked button
+    e.target.disabled = true;
+
+    game.playRound(Number(selectedRow), Number(selectedColumn));
     updateScreen();
   }
   boardDiv.addEventListener("click", clickHandlerBoard);
 
   //initial render
   updateScreen();
-}
-ScreenController();
+})();

@@ -68,6 +68,7 @@ function GameController(
 
   //function to handle winning logic
   const checkWinner = () => {
+    const winnerTextDiv = document.querySelector(".winner");
     const boardValues = theBoard.map((row) =>
       row.map((cell) => cell.getValue())
     );
@@ -79,9 +80,10 @@ function GameController(
         boardValues[i][0] === boardValues[i][1] &&
         boardValues[i][1] === boardValues[i][2]
       ) {
-        console.log(
-          `${getActivePlayer().name} wins with token "${boardValues[i][0]}"!`
-        );
+        winnerTextDiv.textContent = `${
+          getActivePlayer().name
+        } wins with token "${boardValues[i][0]}"`;
+        return true;
       }
     }
 
@@ -90,11 +92,12 @@ function GameController(
       if (
         boardValues[0][i] &&
         boardValues[0][i] === boardValues[1][i] &&
-        boardValues[1][i] === boardValues[2][1]
+        boardValues[1][i] === boardValues[2][i]
       ) {
-        console.log(
-          `${getActivePlayer().name} wins with token "${boardValues[0][i]}"!`
-        );
+        winnerTextDiv.textContent = `${
+          getActivePlayer().name
+        } wins with token "${boardValues[0][i]}"`;
+        return true;
       }
     }
 
@@ -104,9 +107,10 @@ function GameController(
       boardValues[0][0] === boardValues[1][1] &&
       boardValues[1][1] === boardValues[2][2]
     ) {
-      console.log(
-        `${getActivePlayer().name} wins with token "${boardValues[0][0]}"!`
-      );
+      winnerTextDiv.textContent = `${getActivePlayer().name} wins with token "${
+        boardValues[0][0]
+      }"`;
+      return true;
     }
 
     if (
@@ -114,10 +118,13 @@ function GameController(
       boardValues[0][2] === boardValues[1][1] &&
       boardValues[1][1] === boardValues[2][0]
     ) {
-      console.log(
-        `${getActivePlayer().name} wins with token "${boardValues[0][2]}"!`
-      );
+      winnerTextDiv.textContent = `${getActivePlayer().name} wins with token "${
+        boardValues[0][2]
+      }"`;
+      return true;
     }
+
+    return false;
   };
 
   const playRound = (r, c) => {
@@ -129,7 +136,10 @@ function GameController(
     board.dropToken(r, c, getActivePlayer().token);
 
     //winner logic would be handled here
-    checkWinner();
+    if (checkWinner()) {
+      updateScreen().disableCell();
+      return;
+    }
 
     switchPlayerTurn();
     printNewRound();
@@ -166,8 +176,11 @@ function GameController(
         cellButton.textContent = cell.getValue();
 
         // Disable already played cells
-        if (cell.getValue() !== null) {
+        const disableCell = () => {
           cellButton.disabled = true;
+        };
+        if (cell.getValue() !== null) {
+          disableCell();
         }
 
         boardDiv.appendChild(cellButton);
@@ -183,9 +196,6 @@ function GameController(
     // Ensure the click is on a valid cell and not gaps
     if (!selectedRow || !selectedColumn) return;
 
-    // Disable the clicked button
-    e.target.disabled = true;
-
     game.playRound(Number(selectedRow), Number(selectedColumn));
     updateScreen();
   }
@@ -193,4 +203,6 @@ function GameController(
 
   //initial render
   updateScreen();
+
+  return { updateScreen };
 })();

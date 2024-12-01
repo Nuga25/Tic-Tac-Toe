@@ -128,16 +128,10 @@ function GameController(
   };
 
   const playRound = (r, c) => {
-    console.log(
-      `Dropping ${
-        getActivePlayer().name
-      }'s token into row ${r} and column ${c}...`
-    );
     board.dropToken(r, c, getActivePlayer().token);
 
     //winner logic would be handled here
     if (checkWinner()) {
-      updateScreen().disableCell();
       return;
     }
 
@@ -147,7 +141,7 @@ function GameController(
   // Initial play game message
   printNewRound();
 
-  return { playRound, getActivePlayer, getBoard: board.getBoard };
+  return { playRound, getActivePlayer, getBoard: board.getBoard, checkWinner };
 }
 
 (function ScreenController() {
@@ -164,6 +158,9 @@ function GameController(
 
     playerTurnText.textContent = `${activePlayer.name}'s turn...`;
 
+    // Check for winner before rendering the board
+    const winnerFound = game.checkWinner();
+
     //render board squares
     board.forEach((row, rowIndex) => {
       row.forEach((cell, columnIndex) => {
@@ -175,12 +172,9 @@ function GameController(
 
         cellButton.textContent = cell.getValue();
 
-        // Disable already played cells
-        const disableCell = () => {
+        // Disable all cells if the game has ended (winner found or game over)
+        if (winnerFound || cell.getValue() !== null) {
           cellButton.disabled = true;
-        };
-        if (cell.getValue() !== null) {
-          disableCell();
         }
 
         boardDiv.appendChild(cellButton);
@@ -203,6 +197,4 @@ function GameController(
 
   //initial render
   updateScreen();
-
-  return { updateScreen };
 })();

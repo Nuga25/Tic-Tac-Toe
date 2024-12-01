@@ -172,6 +172,12 @@ function GameController(
 
         cellButton.textContent = cell.getValue();
 
+        if (cell.getValue() === "X") {
+          cellButton.style.color = "#d91656"; // Style "X" in red
+        } else if (cell.getValue() === "O") {
+          cellButton.style.color = "#ffb200"; // Style "O" in yellow
+        }
+
         // Disable all cells if the game has ended (winner found or game over)
         if (winnerFound || cell.getValue() !== null) {
           cellButton.disabled = true;

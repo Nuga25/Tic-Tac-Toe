@@ -16,14 +16,60 @@
     <header>
       <h1>T<span style="color: #d91656;">I</span>C <span style="color: #d91656;">T</span>A<span style="color: #d91656;">C</span> T<span style="color: #d91656;">O</span>E</h1>
     </header>
-    <section>
-      <div class="container">
-        <h1 class="turn"></div>
-        <div class="board"></div>
-        <h2 class="winner"></h2>
-      </div>
-      <button class="resetButton">reset</button>
-    </section>
+
+    <main>
+      <section class="dialog-container">
+        <dialog id="userInputDialog">
+          <form method="dialog">
+            <p>Enter player's names</p>
+            <div class="fieldInput">
+              <label for="player1">Player One's Name</label>
+              <input type="text" id="player1" name="playerOne" autofocus required>
+            </div>
+            <div class="fieldInput">
+              <label for="player2">Player Two's Name</label>
+              <input type="text" id="player2" name="playerTwo" required>
+            </div>
+            <button type="submit" id="submit-btn">Submit</button>
+            <p class="error-msg"></p>
+          </form>
+        </dialog>
+      </section>
+  
+      <section>
+        <table>
+          <thead>
+            <tr>
+              <th>Players</th>
+              <th>Scores</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="player1-name-in-scoreboard">Nil</td>
+              <td class="player1-score-in-scoreboard">0</td>
+            </tr>
+            <tr>
+              <td class="player2-name-in-scoreboard">Nil</td>
+              <td class="player2-score-in-scoreboard">0</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+  
+      <section id="board-section">
+        <div class="container">
+          <h1 class="turn"></div>
+          <div class="board"></div>
+          <h2 class="winner"></h2>
+        </div>
+        <div class="reset-btns">
+          <button class="resetRoundButton reset-btn">Reset round</button>
+          <button class="resetGameButton reset-btn">Reset game</button>
+        </div>
+      </section>
+    </main>
+
     <footer>
       <small>
         <p>Coded by <a href="https://x.com/ifeeee___">ifeeee___</a> &copy; 2024</p>

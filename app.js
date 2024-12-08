@@ -50,8 +50,8 @@ function GameController(
   const theBoard = board.getBoard();
 
   const players = [
-    { name: playerOneName, token: "X" },
-    { name: playerTwoName, token: "O" },
+    { name: playerOneName, token: "X", score: 0 },
+    { name: playerTwoName, token: "O", score: 0 },
   ];
 
   let activePlayer = players[0];
@@ -83,6 +83,7 @@ function GameController(
         winnerTextDiv.textContent = `${
           getActivePlayer().name
         } wins with token "${boardValues[i][0]}"`;
+        activePlayer.score++;
         return true;
       }
     }
@@ -97,6 +98,7 @@ function GameController(
         winnerTextDiv.textContent = `${
           getActivePlayer().name
         } wins with token "${boardValues[0][i]}"`;
+        activePlayer.score++;
         return true;
       }
     }
@@ -110,6 +112,7 @@ function GameController(
       winnerTextDiv.textContent = `${getActivePlayer().name} wins with token "${
         boardValues[0][0]
       }"`;
+      activePlayer.score++;
       return true;
     }
 
@@ -121,6 +124,7 @@ function GameController(
       winnerTextDiv.textContent = `${getActivePlayer().name} wins with token "${
         boardValues[0][2]
       }"`;
+      activePlayer.score++;
       return true;
     }
 
@@ -138,16 +142,78 @@ function GameController(
     switchPlayerTurn();
     printNewRound();
   };
+
+  const getScores = () =>
+    players.map((player) => ({ name: player.name, score: player.score }));
+
   // Initial play game message
   printNewRound();
 
-  return { playRound, getActivePlayer, getBoard: board.getBoard, checkWinner };
+  return {
+    playRound,
+    getActivePlayer,
+    getBoard: board.getBoard,
+    checkWinner,
+    getScores,
+  };
 }
 
 (function ScreenController() {
-  const game = GameController();
+  let game = GameController();
   const playerTurnText = document.querySelector(".turn");
   const boardDiv = document.querySelector(".board");
+
+  //display dialog on page load
+  const dialog = document.querySelector("#userInputDialog");
+  window.addEventListener("DOMContentLoaded", () => {
+    if (dialog) {
+      dialog.showModal();
+    }
+  });
+
+  //handle dialog form submission to recieve player names
+  const submitFormButton = document.querySelector("#submit-btn");
+  submitFormButton.addEventListener("click", (e) => {
+    e.preventDefault(); //to prevent default behaviour of submit button
+
+    const player1 = document.querySelector("#player1").value;
+    const player2 = document.querySelector("#player2").value;
+
+    if (player1.trim() === "" || player2.trim() === "") {
+      document.querySelector(".error-msg").textContent =
+        "Please enter both player names.";
+      return;
+    }
+
+    // Update `game` with new player names
+    game = GameController(player1, player2);
+
+    // Close dialog
+    dialog.close();
+
+    // Update the screen to reflect the new game state
+    updateScreen();
+  });
+
+  //handle round reset
+  document.querySelector(".resetRoundButton").addEventListener("click", () => {
+    const player1 = document.querySelector("#player1").value;
+    const player2 = document.querySelector("#player2").value;
+
+    game = GameController(player1, player2); // Reinitialize the game
+    updateScreen(); // Refresh the screen
+  });
+
+  //handle game reset
+  document.querySelector(".resetGameButton").addEventListener("click", () => {
+    const player1 = document.querySelector("#player1").value;
+    const player2 = document.querySelector("#player2").value;
+
+    game = GameController(player1, player2); // Reinitialize the game
+    updateScreen(); // Refresh the screen
+
+    dialog.showModal();
+  });
 
   const updateScreen = () => {
     boardDiv.textContent = "";
@@ -157,6 +223,17 @@ function GameController(
     const activePlayer = game.getActivePlayer();
 
     playerTurnText.textContent = `${activePlayer.name}'s turn...`;
+    document.querySelector(".player1-name-in-scoreboard").textContent =
+      document.querySelector("#player1").value;
+    document.querySelector(".player2-name-in-scoreboard").textContent =
+      document.querySelector("#player2").value;
+
+    // Update scores
+    const scores = game.getScores();
+    document.querySelector(".player1-score-in-scoreboard").textContent =
+      scores[0].score;
+    document.querySelector(".player2-score-in-scoreboard").textContent =
+      scores[1].score;
 
     // Check for winner before rendering the board
     const winnerFound = game.checkWinner();

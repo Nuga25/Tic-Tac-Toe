@@ -215,7 +215,7 @@ small > p > a {
 @media only screen and (max-width: 760px) {
   html,
   body {
-    margin-bottom: 0;
+    margin-bottom: 20px;
   }
   #userInputDialog {
     width: 80%;

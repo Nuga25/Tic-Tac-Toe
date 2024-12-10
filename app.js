@@ -256,7 +256,7 @@ function GameController(
           setTimeout(() => {
             game.resetBoard();
             updateScreen();
-          }, 1000); // Optional 2-second delay
+          }, 1000);
           return; // Skip rendering further to show the winning message first
         }
 

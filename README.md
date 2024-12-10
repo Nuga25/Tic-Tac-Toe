@@ -4,10 +4,12 @@ This is a simple implementation of the classic Tic-Tac-Toe game, project from TO
 
 \*\*Desktop Screenshot
 ![Desktop Screenshot](./assets/127.0.0.1_5500_index.html.png)
+
 ![Desktop Screenshot](<./assets/127.0.0.1_5500_index.html%20(1).png>)
 
 \*\*Mobile Screenshot
 ![Desktop Screenshot](<./assets/127.0.0.1_5500_index.html(iPhone 14 Pro Max).png>)
+
 ![Desktop Screenshot](<./assets/127.0.0.1_5500_index.html(iPhone%2014%20Pro%20Max)%20(1).png>)
 
 # Features

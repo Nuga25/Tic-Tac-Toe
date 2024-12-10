@@ -242,5 +242,6 @@ small > p > a {
   }
   .reset-btn {
     width: 90%;
+    margin-bottom: 5px;
   }
 }

@@ -194,8 +194,8 @@ function GameController(
 
   //handle round reset
   document.querySelector(".resetRoundButton").addEventListener("click", () => {
-    game.resetBoard(); // Clear the board
-    updateScreen(); // Refresh the UI
+    game.resetBoard();
+    updateScreen();
   });
 
   //handle game reset
@@ -204,7 +204,7 @@ function GameController(
     const player2 = document.querySelector("#player2").value;
 
     game = GameController(player1, player2); // Reinitialize the game
-    updateScreen(); // Refresh the screen
+    updateScreen();
 
     dialog.showModal();
   });
@@ -237,7 +237,7 @@ function GameController(
       row.forEach((cell, columnIndex) => {
         const cellButton = document.createElement("button");
         cellButton.classList.add("cell");
-        //create a data attribute to identify the column and row to make it easier to pass in our 'playRound' fucntion
+        //create a data attribute to identify the column and row to make it easier to pass in 'playRound' fucntion
         cellButton.dataset.row = rowIndex;
         cellButton.dataset.column = columnIndex;
 
@@ -257,7 +257,7 @@ function GameController(
             game.resetBoard();
             updateScreen();
           }, 1000);
-          return; // Skip rendering further to show the winning message first
+          return;
         }
 
         // Disable already filled cells

@@ -80,9 +80,6 @@ function GameController(
         boardValues[i][0] === boardValues[i][1] &&
         boardValues[i][1] === boardValues[i][2]
       ) {
-        winnerTextDiv.textContent = `${
-          getActivePlayer().name
-        } wins with token "${boardValues[i][0]}"`;
         activePlayer.score++;
         return true;
       }
@@ -95,9 +92,6 @@ function GameController(
         boardValues[0][i] === boardValues[1][i] &&
         boardValues[1][i] === boardValues[2][i]
       ) {
-        winnerTextDiv.textContent = `${
-          getActivePlayer().name
-        } wins with token "${boardValues[0][i]}"`;
         activePlayer.score++;
         return true;
       }
@@ -109,9 +103,6 @@ function GameController(
       boardValues[0][0] === boardValues[1][1] &&
       boardValues[1][1] === boardValues[2][2]
     ) {
-      winnerTextDiv.textContent = `${getActivePlayer().name} wins with token "${
-        boardValues[0][0]
-      }"`;
       activePlayer.score++;
       return true;
     }
@@ -121,9 +112,6 @@ function GameController(
       boardValues[0][2] === boardValues[1][1] &&
       boardValues[1][1] === boardValues[2][0]
     ) {
-      winnerTextDiv.textContent = `${getActivePlayer().name} wins with token "${
-        boardValues[0][2]
-      }"`;
       activePlayer.score++;
       return true;
     }
@@ -136,11 +124,21 @@ function GameController(
 
     //winner logic would be handled here
     if (checkWinner()) {
+      activePlayer.score--; //to prevent score from updating twice:(
       return;
     }
 
     switchPlayerTurn();
     printNewRound();
+  };
+
+  const resetBoard = () => {
+    activePlayer = players[0];
+    for (let row of theBoard) {
+      for (let cell of row) {
+        cell.addToken(null); // Clear cell value
+      }
+    }
   };
 
   const getScores = () =>
@@ -155,6 +153,7 @@ function GameController(
     getBoard: board.getBoard,
     checkWinner,
     getScores,
+    resetBoard,
   };
 }
 
@@ -197,11 +196,8 @@ function GameController(
 
   //handle round reset
   document.querySelector(".resetRoundButton").addEventListener("click", () => {
-    const player1 = document.querySelector("#player1").value;
-    const player2 = document.querySelector("#player2").value;
-
-    game = GameController(player1, player2); // Reinitialize the game
-    updateScreen(); // Refresh the screen
+    game.resetBoard(); // Clear the board
+    updateScreen(); // Refresh the UI
   });
 
   //handle game reset
@@ -255,8 +251,19 @@ function GameController(
           cellButton.style.color = "#ffb200"; // Style "O" in yellow
         }
 
-        // Disable all cells if the game has ended (winner found or game over)
-        if (winnerFound || cell.getValue() !== null) {
+        if (winnerFound) {
+          playerTurnText.textContent = `${
+            game.getActivePlayer().name
+          } wins this round!`;
+          setTimeout(() => {
+            game.resetBoard();
+            updateScreen();
+          }, 1000); // Optional 2-second delay
+          return; // Skip rendering further to show the winning message first
+        }
+
+        // Disable already filled cells
+        if (cell.getValue() !== null) {
           cellButton.disabled = true;
         }
 
